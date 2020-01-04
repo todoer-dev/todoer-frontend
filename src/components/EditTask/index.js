@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { TextField, Card, makeStyles } from '@material-ui/core';
 import CardActions from '@material-ui/core/CardActions';
 import DeleteIcon from '@material-ui/icons/Delete';
