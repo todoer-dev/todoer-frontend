@@ -1,30 +1,30 @@
-import React, { useState, useCallback } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import TextField from "@material-ui/core/TextField";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import Star from "../StarIcon";
+import React, { useState, useCallback } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import TextField from '@material-ui/core/TextField';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import Star from '../StarIcon';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "100%",
-    maxWidth: "40vw",
-    backgroundColor: theme.palette.background.paper
+    width: '100%',
+    maxWidth: '40vw',
+    backgroundColor: theme.palette.background.paper,
   },
   textField: {
-    width: "90%",
-    marginLeft: 20
+    width: '90%',
+    marginLeft: 20,
   },
   emptyMessage: {
-    width: "90%",
+    width: '90%',
     marginLeft: 20,
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 }));
 
 export default function TaskList(props) {
@@ -36,15 +36,15 @@ export default function TaskList(props) {
     createTask,
     onTaskSelect,
     onTaskStarred,
-    selectedTaskId
+    selectedTaskId,
   } = props;
-  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskTitle, setNewTaskTitle] = useState('');
   const createTaskHandler = useCallback(
     e => {
       e.preventDefault();
       createTask({
         title: newTaskTitle,
-        labels: [activeLabel]
+        labels: [activeLabel],
       });
     },
     [newTaskTitle, activeLabel, createTask]
@@ -75,11 +75,11 @@ export default function TaskList(props) {
               >
                 <ListItemIcon>
                   <Checkbox
-                    edge="start"
+                    edge='start'
                     checked={task.completed}
                     tabIndex={-1}
                     disableRipple
-                    inputProps={{ "aria-labelledby": labelId }}
+                    inputProps={{ 'aria-labelledby': labelId }}
                     onChange={() => onTaskComplete(task.id)}
                   />
                 </ListItemIcon>
@@ -90,8 +90,8 @@ export default function TaskList(props) {
                 />
                 <ListItemSecondaryAction>
                   <IconButton
-                    edge="end"
-                    aria-label="comments"
+                    edge='end'
+                    aria-label='comments'
                     onClick={() => onTaskStarred(task.id)}
                   >
                     <Star starred={task.starred} />

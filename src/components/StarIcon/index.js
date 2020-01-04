@@ -6,18 +6,18 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   activeIcon: {
     color: '#f3f347',
-  }
+  },
 }));
 
-const Star = (props) => {
+const Star = props => {
   const classes = useStyles();
   const { starred } = props;
 
-  if(starred) {
-    return <StarIcon className={classes.activeIcon} />
+  if (starred) {
+    return <StarIcon className={classes.activeIcon} />;
   }
 
-  return <StarBorderIcon />
+  return <StarBorderIcon />;
 };
 
 export default Star;

@@ -18,24 +18,24 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     maxHeight: 400,
     position: 'sticky',
-    top: 20
+    top: 20,
   },
   field: {
-    width: '95%'
+    width: '95%',
   },
   textarea: {
     marginTop: 20,
-    width: '95%'
+    width: '95%',
   },
   main: {
     flex: 1,
   },
   titleField: {
     width: '75%',
-  }
+  },
 });
 
-const EditTask = (props) => {
+const EditTask = props => {
   const { task, onTaskComplete, onTaskDelete, onTaskStarred, editTask } = props;
   const classes = useStyles();
   const [title, setTitle] = useState('');
@@ -46,7 +46,7 @@ const EditTask = (props) => {
     setTitle(task.title);
     setDueDate(task.dueDate || '');
     setNote(task.note || '');
-    console.log(task)
+    console.log(task);
   }, [task]);
 
   const saveTask = useCallback(() => {
@@ -63,7 +63,7 @@ const EditTask = (props) => {
     <Card className={classes.root}>
       <div>
         <Checkbox
-          edge="start"
+          edge='start'
           checked={task.completed}
           tabIndex={-1}
           disableRipple
@@ -72,47 +72,39 @@ const EditTask = (props) => {
         <TextField
           className={classes.titleField}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={e => setTitle(e.target.value)}
         />
       </div>
       <div className={classes.main}>
         <TextField
-          label="Set due date"
-          type="date"
+          label='Set due date'
+          type='date'
           InputLabelProps={{
             shrink: true,
           }}
           value={dueDate}
           className={classes.field}
           disabled={task.completed}
-          onChange={(e) => setDueDate(e.target.value)}
+          onChange={e => setDueDate(e.target.value)}
         />
         <TextField
-          label="Add a note..."
+          label='Add a note...'
           multiline
-          rows="4"
+          rows='4'
           value={note}
-          variant="outlined"
+          variant='outlined'
           className={classes.textarea}
-          onChange={(e) => setNote(e.target.value)}
+          onChange={e => setNote(e.target.value)}
         />
       </div>
       <CardActions disableSpacing>
-        <IconButton
-          aria-label="save"
-          onClick={saveTask}
-        >
+        <IconButton aria-label='save' onClick={saveTask}>
           <SaveIcon />
         </IconButton>
-        <IconButton
-          aria-label="star"
-          onClick={() => onTaskStarred(task.id)}
-        >
+        <IconButton aria-label='star' onClick={() => onTaskStarred(task.id)}>
           <Star starred={task.starred} />
         </IconButton>
-        <IconButton
-          onClick={() => onTaskDelete(task.id)}
-        >
+        <IconButton onClick={() => onTaskDelete(task.id)}>
           <DeleteIcon />
         </IconButton>
       </CardActions>

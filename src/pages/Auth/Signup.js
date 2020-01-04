@@ -35,67 +35,70 @@ const useStyles = makeStyles(theme => ({
 export default function SignUp() {
   const classes = useStyles();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); 
+  const [password, setPassword] = useState('');
 
-  const onFormSubmut = useCallback(async (e) => {
-    e.preventDefault();
-    console.log(email, password);
-    const user = await userService.signup({ email, password });
-    console.log(user);
-  }, [email, password]);
+  const onFormSubmut = useCallback(
+    async e => {
+      e.preventDefault();
+      console.log(email, password);
+      const user = await userService.signup({ email, password });
+      console.log(user);
+    },
+    [email, password]
+  );
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component='main' maxWidth='xs'>
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component='h1' variant='h5'>
           Sign up
         </Typography>
-        <form className={classes.form} onSubmit={onFormSubmut} >
+        <form className={classes.form} onSubmit={onFormSubmut}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
+                variant='outlined'
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id='email'
+                label='Email Address'
+                name='email'
+                autoComplete='email'
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
+                variant='outlined'
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                name='password'
+                label='Password'
+                type='password'
+                id='password'
+                autoComplete='current-password'
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
               />
             </Grid>
           </Grid>
           <Button
-            type="submit"
+            type='submit'
             fullWidth
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             className={classes.submit}
           >
             Sign Up
           </Button>
-          <Grid container justify="flex-end">
+          <Grid container justify='flex-end'>
             <Grid item>
-              <Link component={RouterLink} to="/login" variant="body2">
+              <Link component={RouterLink} to='/login' variant='body2'>
                 Already have an account? Sign in
               </Link>
             </Grid>

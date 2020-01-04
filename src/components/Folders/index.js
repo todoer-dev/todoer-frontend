@@ -45,13 +45,13 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 10,
   },
   elemActive: {
-    backgroundColor: '#eeeeee'
-  }
+    backgroundColor: '#eeeeee',
+  },
 }));
 
-const FolderIcon = (props) => {
+const FolderIcon = props => {
   const { label } = props;
-  switch(label) {
+  switch (label) {
     case 'All':
       return <AllInclusiveIcon />;
     case 'Completed':
@@ -63,8 +63,7 @@ const FolderIcon = (props) => {
     default:
       return <FormatListBulletedIcon />;
   }
-}
-
+};
 
 const Folders = props => {
   const classes = useStyles();
@@ -73,28 +72,28 @@ const Folders = props => {
   return (
     <Drawer
       className={classes.drawer}
-      variant="permanent"
+      variant='permanent'
       classes={{
-        paper: classes.drawerPaper
+        paper: classes.drawerPaper,
       }}
-      anchor="left"
+      anchor='left'
     >
-      <div className={classes.toolbar}>
-        user here
-      </div>
+      <div className={classes.toolbar}>user here</div>
       <Divider />
       <List>
-        {['All', 'Completed', 'Active', 'Starred', ...labels].map((text, index) => (
-          <ListItem
-            button
-            key={text}
-            selected={active === text}
-            onClick={() => setActive(text)}
-          >
-            <FolderIcon label={text} />
-            <ListItemText className={classes.elem} primary={text} />
-          </ListItem>
-        ))}
+        {['All', 'Completed', 'Active', 'Starred', ...labels].map(
+          (text, index) => (
+            <ListItem
+              button
+              key={text}
+              selected={active === text}
+              onClick={() => setActive(text)}
+            >
+              <FolderIcon label={text} />
+              <ListItemText className={classes.elem} primary={text} />
+            </ListItem>
+          )
+        )}
       </List>
       <Divider />
     </Drawer>

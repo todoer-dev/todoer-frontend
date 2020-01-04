@@ -35,50 +35,50 @@ export default function SignIn() {
   const classes = useStyles();
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component='main' maxWidth='xs'>
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component='h1' variant='h5'>
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
-            variant="outlined"
-            margin="normal"
+            variant='outlined'
+            margin='normal'
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id='email'
+            label='Email Address'
+            name='email'
+            autoComplete='email'
             autoFocus
           />
           <TextField
-            variant="outlined"
-            margin="normal"
+            variant='outlined'
+            margin='normal'
             required
             fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
+            name='password'
+            label='Password'
+            type='password'
+            id='password'
+            autoComplete='current-password'
           />
           <Button
-            type="submit"
+            type='submit'
             fullWidth
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             className={classes.submit}
           >
             Sign In
           </Button>
           <Grid container>
             <Grid item>
-              <Link component={RouterLink} to="/signup" variant="body2">
+              <Link component={RouterLink} to='/signup' variant='body2'>
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
