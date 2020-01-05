@@ -15,6 +15,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import Star from '../StarIcon';
 import { defaultFolders } from '../Folders';
+import MomentUtils from '@date-io/moment';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import moment from 'moment';
 
 const useStyles = makeStyles({
   root: {
@@ -39,7 +42,7 @@ const useStyles = makeStyles({
     flex: 1,
   },
   titleField: {
-    width: '75%',
+    width: '88%',
   },
   labelsContainer: {
     marginTop: 10,
@@ -107,23 +110,23 @@ const EditTask = props => {
   } = props;
   const classes = useStyles();
   const [title, setTitle] = useState('');
-  const [note, setNote] = useState('');
+  const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
 
   useEffect(() => {
     setTitle(task.title);
-    setDueDate(task.dueDate || '');
-    setNote(task.note || '');
+    setDueDate(task.dueDate);
+    setDescription(task.description || '');
   }, [task]);
 
   const saveTask = useCallback(() => {
     editTask({
       title,
-      note,
+      description,
       dueDate,
       id: task.id,
     });
-  }, [title, note, dueDate, editTask, task.id]);
+  }, [title, description, dueDate, editTask, task.id]);
 
   const addLabelToTask = useCallback(
     label => {
@@ -142,12 +145,16 @@ const EditTask = props => {
     [task.id, removeLabel]
   );
 
+  const handleDueDateChange = useCallback(date => {
+    setDueDate(date.format('M/D/YYYY'));
+  }, []);
+
   return (
     <Card className={classes.root}>
       <div>
         <Checkbox
           edge='start'
-          checked={task.completed}
+          checked={!!task.completedAt}
           tabIndex={-1}
           disableRipple
           onChange={() => onTaskComplete(task.id)}
@@ -159,25 +166,24 @@ const EditTask = props => {
         />
       </div>
       <div className={classes.main}>
+        <MuiPickersUtilsProvider utils={MomentUtils} moment={moment}>
+          <DatePicker
+            disabled={!!task.completedAt}
+            value={dueDate}
+            className={classes.field}
+            onChange={handleDueDateChange}
+            disablePast
+            emptyLabel='Select due date'
+          />
+        </MuiPickersUtilsProvider>
         <TextField
-          label='Set due date'
-          type='date'
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={dueDate}
-          className={classes.field}
-          disabled={task.completed}
-          onChange={e => setDueDate(e.target.value)}
-        />
-        <TextField
-          label='Add a note...'
+          label='Add a description...'
           multiline
           rows='4'
-          value={note}
+          value={description}
           variant='outlined'
           className={classes.textarea}
-          onChange={e => setNote(e.target.value)}
+          onChange={e => setDescription(e.target.value)}
         />
         <LabelList
           labels={task.labels}
@@ -190,7 +196,7 @@ const EditTask = props => {
           <SaveIcon />
         </IconButton>
         <IconButton aria-label='star' onClick={() => onTaskStarred(task.id)}>
-          <Star starred={task.starred} />
+          <Star starred={task.isStarred} />
         </IconButton>
         <IconButton onClick={() => onTaskDelete(task.id)}>
           <DeleteIcon />

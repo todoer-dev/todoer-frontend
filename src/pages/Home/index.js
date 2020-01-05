@@ -3,8 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Folders, { defaultFolders } from '../../components/Folders';
 import TaskList from '../../components/TaskList';
 import EditTask from '../../components/EditTask';
-
-// const availableFolders = ['Label 1', 'Label 2', 'Label 10'];
+import { TaskService } from '../../services/TaskService';
 
 const sampletasks = [
   {
@@ -63,18 +62,22 @@ const Home = props => {
   const [availableFolders, setAvailableFolders] = useState([]);
 
   useEffect(() => {
-    setAllTasks(sampletasks);
+    const fetchData = async () => {
+      const res = await TaskService.fetchAll();
+      setAllTasks(res);
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
     if (activeLabel === 'All') {
       setTasks(allTasks);
     } else if (activeLabel === 'Active') {
-      setTasks(allTasks.filter(t => !t.completed));
+      setTasks(allTasks.filter(t => !t.completedAt));
     } else if (activeLabel === 'Completed') {
-      setTasks(allTasks.filter(t => !!t.completed));
+      setTasks(allTasks.filter(t => !!t.completedAt));
     } else if (activeLabel === 'Starred') {
-      setTasks(allTasks.filter(t => t.starred));
+      setTasks(allTasks.filter(t => t.isStarred));
     } else {
       setTasks(allTasks.filter(t => t.labels.includes(activeLabel)));
     }
@@ -89,14 +92,22 @@ const Home = props => {
   }, [allTasks]);
 
   const onTaskComplete = useCallback(
-    taskId => {
+    async taskId => {
+      const task = allTasks.find(t => t.id === taskId);
+      if (!task) {
+        return;
+      }
+      await TaskService.patch(taskId, {
+        completed_at: task.completedAt ? null : new Date(),
+      });
       setAllTasks(
         allTasks.map(t =>
           t.id === taskId
             ? {
                 ...t,
-                completed: !t.completed,
-                completedAt: new Date().toLocaleDateString(),
+                completedAt: t.completedAt
+                  ? null
+                  : new Date().toLocaleDateString(),
               }
             : t
         )
@@ -106,20 +117,22 @@ const Home = props => {
   );
 
   const createTask = useCallback(
-    taskData => {
+    async taskData => {
       const newTask = {
         ...taskData,
-        completed: false,
-        id: allTasks[allTasks.length - 1].id + 1,
+        completed_at: taskData.labels.includes('Completed') ? new Date() : null,
         labels: taskData.labels.filter(l => !defaultFolders.includes(l)),
+        is_tarred: taskData.labels.includes('Starred'),
       };
-      setAllTasks([...allTasks, newTask]);
+      const nt = await TaskService.create(newTask);
+      setAllTasks([...allTasks, nt]);
     },
     [allTasks]
   );
 
   const onTaskDelete = useCallback(
-    taskId => {
+    async taskId => {
+      await TaskService.delete(taskId);
       setAllTasks(allTasks.filter(task => task.id !== taskId));
       setSelectedTaskId();
     },
@@ -127,23 +140,37 @@ const Home = props => {
   );
 
   const onTaskStarred = useCallback(
-    taskId => {
+    async taskId => {
+      const task = allTasks.find(t => t.id === taskId);
+      if (!task) {
+        return;
+      }
+      await TaskService.patch(taskId, {
+        is_starred: !task.isStarred,
+      });
       setAllTasks(
-        allTasks.map(t => (t.id === taskId ? { ...t, starred: !t.starred } : t))
+        allTasks.map(t =>
+          t.id === taskId ? { ...t, isStarred: !t.isStarred } : t
+        )
       );
     },
     [allTasks]
   );
 
   const editTask = useCallback(
-    ({ title, note, dueDate, id }) => {
+    async ({ title, description, dueDate, id }) => {
+      await TaskService.patch(id, {
+        title,
+        description,
+        due_date: new Date(dueDate),
+      });
       setAllTasks(
         allTasks.map(t =>
           t.id === id
             ? {
                 ...t,
                 title,
-                note,
+                description,
                 dueDate,
               }
             : t
@@ -154,7 +181,14 @@ const Home = props => {
   );
 
   const addLabel = useCallback(
-    ({ taskId, label }) => {
+    async ({ taskId, label }) => {
+      const task = allTasks.find(t => t.id === taskId);
+      if (!task) {
+        return;
+      }
+      await TaskService.patch(taskId, {
+        labels: [...task.labels, label],
+      });
       setAllTasks(
         allTasks.map(t =>
           t.id === taskId ? { ...t, labels: [...t.labels, label] } : t
@@ -165,7 +199,14 @@ const Home = props => {
   );
 
   const removeLabel = useCallback(
-    ({ taskId, label }) => {
+    async ({ taskId, label }) => {
+      const task = allTasks.find(t => t.id === taskId);
+      if (!task) {
+        return;
+      }
+      await TaskService.patch(taskId, {
+        labels: task.labels.filter(l => l !== label),
+      });
       setAllTasks(
         allTasks.map(t =>
           t.id === taskId

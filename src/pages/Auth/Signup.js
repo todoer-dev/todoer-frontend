@@ -9,7 +9,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { userService } from '../../services/UserService';
 
 const useStyles = makeStyles(theme => ({
@@ -36,15 +36,16 @@ export default function SignUp() {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
   const onFormSubmut = useCallback(
     async e => {
       e.preventDefault();
       console.log(email, password);
-      const user = await userService.signup({ email, password });
-      console.log(user);
+      await userService.signup({ email, password });
+      history.push('/login');
     },
-    [email, password]
+    [email, password, history]
   );
 
   return (

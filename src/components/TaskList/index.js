@@ -76,7 +76,7 @@ export default function TaskList(props) {
                 <ListItemIcon>
                   <Checkbox
                     edge='start'
-                    checked={task.completed}
+                    checked={!!task.completedAt}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{ 'aria-labelledby': labelId }}
@@ -86,7 +86,9 @@ export default function TaskList(props) {
                 <ListItemText
                   id={labelId}
                   primary={task.title}
-                  secondary={task.completed ? task.completedAt : task.dueDate}
+                  secondary={
+                    !!task.completedAt ? task.completedAt : task.dueDate
+                  }
                 />
                 <ListItemSecondaryAction>
                   <IconButton
@@ -94,7 +96,7 @@ export default function TaskList(props) {
                     aria-label='comments'
                     onClick={() => onTaskStarred(task.id)}
                   >
-                    <Star starred={task.starred} />
+                    <Star starred={task.isStarred} />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
