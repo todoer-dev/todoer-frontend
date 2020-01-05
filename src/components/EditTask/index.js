@@ -45,11 +45,9 @@ const EditTask = props => {
     setTitle(task.title);
     setDueDate(task.dueDate || '');
     setNote(task.note || '');
-    console.log(task);
   }, [task]);
 
   const saveTask = useCallback(() => {
-    console.log('editing', title, note, dueDate);
     editTask({
       title,
       note,
