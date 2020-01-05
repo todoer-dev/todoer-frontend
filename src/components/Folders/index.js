@@ -13,6 +13,8 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 const drawerWidth = 240;
 
+export const defaultFolders = ['All', 'Completed', 'Active', 'Starred'];
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -74,19 +76,17 @@ const Folders = props => {
       <div className={classes.toolbar}>user here</div>
       <Divider />
       <List>
-        {['All', 'Completed', 'Active', 'Starred', ...labels].map(
-          (text, index) => (
-            <ListItem
-              button
-              key={text}
-              selected={active === text}
-              onClick={() => setActive(text)}
-            >
-              <FolderIcon label={text} />
-              <ListItemText className={classes.elem} primary={text} />
-            </ListItem>
-          )
-        )}
+        {[...defaultFolders, ...labels].map((text, index) => (
+          <ListItem
+            button
+            key={text}
+            selected={active === text}
+            onClick={() => setActive(text)}
+          >
+            <FolderIcon label={text} />
+            <ListItemText className={classes.elem} primary={text} />
+          </ListItem>
+        ))}
       </List>
       <Divider />
     </Drawer>

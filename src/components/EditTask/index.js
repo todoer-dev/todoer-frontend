@@ -14,6 +14,7 @@ import CardActions from '@material-ui/core/CardActions';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import Star from '../StarIcon';
+import { defaultFolders } from '../Folders';
 
 const useStyles = makeStyles({
   root: {
@@ -60,36 +61,36 @@ const LabelList = props => {
     [addLabel, newLabel]
   );
 
-  if (!labels || !labels.length) {
-    return <div className={classes.labelsContainer}>Task has no labels</div>;
-  }
-
   return (
     <div className={classes.labelsContainer}>
       <form onSubmit={addLabelHandler}>
         <TextField
-          className={classes.textField}
+          className={classes.field}
           label={`Add new label`}
           value={newLabel}
           onChange={e => setNewLabel(e.target.value)}
         />
       </form>
-      <List>
-        {labels.map(label => (
-          <ListItem key={label} dense button>
-            <ListItemText primary={label} />
-            <ListItemSecondaryAction>
-              <IconButton
-                edge='end'
-                aria-label='comments'
-                onClick={() => removeLabel(label)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
+      {labels && labels.length ? (
+        <List>
+          {labels.map(label => (
+            <ListItem key={label} dense button>
+              <ListItemText primary={label} />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge='end'
+                  aria-label='comments'
+                  onClick={() => removeLabel(label)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <div className={classes.labelsContainer}>Task has no labels</div>
+      )}
     </div>
   );
 };
@@ -126,7 +127,7 @@ const EditTask = props => {
 
   const addLabelToTask = useCallback(
     label => {
-      if (task.labels.includes(label)) {
+      if (task.labels.includes(label) || defaultFolders.includes(label)) {
         return;
       }
       addLabel({ taskId: task.id, label });

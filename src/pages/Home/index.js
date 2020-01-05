@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Folders from '../../components/Folders';
+import Folders, { defaultFolders } from '../../components/Folders';
 import TaskList from '../../components/TaskList';
 import EditTask from '../../components/EditTask';
 
@@ -50,6 +50,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'flex-start',
   },
 }));
 
@@ -89,9 +90,15 @@ const Home = props => {
 
   const onTaskComplete = useCallback(
     taskId => {
-      setTasks(
+      setAllTasks(
         allTasks.map(t =>
-          t.id === taskId ? { ...t, completed: !t.completed } : t
+          t.id === taskId
+            ? {
+                ...t,
+                completed: !t.completed,
+                completedAt: new Date().toLocaleDateString(),
+              }
+            : t
         )
       );
     },
@@ -103,7 +110,8 @@ const Home = props => {
       const newTask = {
         ...taskData,
         completed: false,
-        id: sampletasks[allTasks.length - 1].id + 1,
+        id: allTasks[allTasks.length - 1].id + 1,
+        labels: taskData.labels.filter(l => !defaultFolders.includes(l)),
       };
       setAllTasks([...allTasks, newTask]);
     },
