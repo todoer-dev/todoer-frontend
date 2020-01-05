@@ -4,7 +4,7 @@ import Folders from '../../components/Folders';
 import TaskList from '../../components/TaskList';
 import EditTask from '../../components/EditTask';
 
-const availableFolders = ['Label 1', 'Label 2', 'Label 10'];
+// const availableFolders = ['Label 1', 'Label 2', 'Label 10'];
 
 const sampletasks = [
   {
@@ -56,31 +56,46 @@ const useStyles = makeStyles(theme => ({
 const Home = props => {
   const classes = useStyles();
   const [activeLabel, setActiveLabel] = useState('All');
-  const [tasks, setTasks] = useState(sampletasks);
+  const [allTasks, setAllTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [selectedTaskId, setSelectedTaskId] = useState();
+  const [availableFolders, setAvailableFolders] = useState([]);
+
+  useEffect(() => {
+    setAllTasks(sampletasks);
+  }, []);
 
   useEffect(() => {
     if (activeLabel === 'All') {
-      setTasks(sampletasks);
+      setTasks(allTasks);
     } else if (activeLabel === 'Active') {
-      setTasks(sampletasks.filter(t => !t.completed));
+      setTasks(allTasks.filter(t => !t.completed));
     } else if (activeLabel === 'Completed') {
-      setTasks(sampletasks.filter(t => !!t.completed));
+      setTasks(allTasks.filter(t => !!t.completed));
+    } else if (activeLabel === 'Starred') {
+      setTasks(allTasks.filter(t => t.starred));
     } else {
-      setTasks(sampletasks.filter(t => t.labels.includes(activeLabel)));
+      setTasks(allTasks.filter(t => t.labels.includes(activeLabel)));
     }
-    setSelectedTaskId(null);
-  }, [activeLabel]);
+  }, [activeLabel, allTasks]);
+
+  useEffect(() => {
+    const folders = allTasks.reduce(
+      (acc, task) => new Set([...acc, ...task.labels]),
+      new Set()
+    );
+    setAvailableFolders([...folders].sort());
+  }, [allTasks]);
 
   const onTaskComplete = useCallback(
     taskId => {
       setTasks(
-        tasks.map(t =>
+        allTasks.map(t =>
           t.id === taskId ? { ...t, completed: !t.completed } : t
         )
       );
     },
-    [tasks]
+    [allTasks]
   );
 
   const createTask = useCallback(
@@ -88,35 +103,34 @@ const Home = props => {
       const newTask = {
         ...taskData,
         completed: false,
-        id: sampletasks[sampletasks.length - 1].id + 1,
+        id: sampletasks[allTasks.length - 1].id + 1,
       };
-      sampletasks.push(newTask);
-      setTasks([...tasks, newTask]);
+      setAllTasks([...allTasks, newTask]);
     },
-    [tasks]
+    [allTasks]
   );
 
   const onTaskDelete = useCallback(
     taskId => {
-      setTasks(tasks.filter(task => task.id !== taskId));
+      setAllTasks(allTasks.filter(task => task.id !== taskId));
       setSelectedTaskId();
     },
-    [tasks]
+    [allTasks]
   );
 
   const onTaskStarred = useCallback(
     taskId => {
-      setTasks(
-        tasks.map(t => (t.id === taskId ? { ...t, starred: !t.starred } : t))
+      setAllTasks(
+        allTasks.map(t => (t.id === taskId ? { ...t, starred: !t.starred } : t))
       );
     },
-    [tasks]
+    [allTasks]
   );
 
   const editTask = useCallback(
     ({ title, note, dueDate, id }) => {
-      setTasks(
-        tasks.map(t =>
+      setAllTasks(
+        allTasks.map(t =>
           t.id === id
             ? {
                 ...t,
@@ -128,7 +142,31 @@ const Home = props => {
         )
       );
     },
-    [tasks]
+    [allTasks]
+  );
+
+  const addLabel = useCallback(
+    ({ taskId, label }) => {
+      setAllTasks(
+        allTasks.map(t =>
+          t.id === taskId ? { ...t, labels: [...t.labels, label] } : t
+        )
+      );
+    },
+    [allTasks]
+  );
+
+  const removeLabel = useCallback(
+    ({ taskId, label }) => {
+      setAllTasks(
+        allTasks.map(t =>
+          t.id === taskId
+            ? { ...t, labels: t.labels.filter(l => l !== label) }
+            : t
+        )
+      );
+    },
+    [allTasks]
   );
 
   return (
@@ -147,13 +185,15 @@ const Home = props => {
         onTaskStarred={onTaskStarred}
         selectedTaskId={selectedTaskId}
       />
-      {selectedTaskId && (
+      {selectedTaskId && tasks.find(t => t.id === selectedTaskId) && (
         <EditTask
           task={tasks.find(t => t.id === selectedTaskId)}
           onTaskComplete={onTaskComplete}
           onTaskDelete={onTaskDelete}
           onTaskStarred={onTaskStarred}
           editTask={editTask}
+          addLabel={addLabel}
+          removeLabel={removeLabel}
         />
       )}
     </div>

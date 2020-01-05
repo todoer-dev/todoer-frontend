@@ -1,7 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import { TextField, Card, makeStyles } from '@material-ui/core';
+import {
+  TextField,
+  Card,
+  makeStyles,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+} from '@material-ui/core';
 import CardActions from '@material-ui/core/CardActions';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
@@ -15,7 +23,7 @@ const useStyles = makeStyles({
     paddingRight: 10,
     display: 'flex',
     flexDirection: 'column',
-    maxHeight: 400,
+    // maxHeight: 400,
     position: 'sticky',
     top: 20,
   },
@@ -32,10 +40,70 @@ const useStyles = makeStyles({
   titleField: {
     width: '75%',
   },
+  labelsContainer: {
+    marginTop: 10,
+  },
 });
 
+const LabelList = props => {
+  const { labels, addLabel, removeLabel } = props;
+  const classes = useStyles();
+
+  const [newLabel, setNewLabel] = useState('');
+
+  const addLabelHandler = useCallback(
+    e => {
+      e.preventDefault();
+      addLabel(newLabel);
+      setNewLabel('');
+    },
+    [addLabel, newLabel]
+  );
+
+  if (!labels || !labels.length) {
+    return <div className={classes.labelsContainer}>Task has no labels</div>;
+  }
+
+  return (
+    <div className={classes.labelsContainer}>
+      <form onSubmit={addLabelHandler}>
+        <TextField
+          className={classes.textField}
+          label={`Add new label`}
+          value={newLabel}
+          onChange={e => setNewLabel(e.target.value)}
+        />
+      </form>
+      <List>
+        {labels.map(label => (
+          <ListItem key={label} dense button>
+            <ListItemText primary={label} />
+            <ListItemSecondaryAction>
+              <IconButton
+                edge='end'
+                aria-label='comments'
+                onClick={() => removeLabel(label)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
+};
+
 const EditTask = props => {
-  const { task, onTaskComplete, onTaskDelete, onTaskStarred, editTask } = props;
+  const {
+    task,
+    onTaskComplete,
+    onTaskDelete,
+    onTaskStarred,
+    editTask,
+    addLabel,
+    removeLabel,
+  } = props;
   const classes = useStyles();
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
@@ -55,6 +123,23 @@ const EditTask = props => {
       id: task.id,
     });
   }, [title, note, dueDate, editTask, task.id]);
+
+  const addLabelToTask = useCallback(
+    label => {
+      if (task.labels.includes(label)) {
+        return;
+      }
+      addLabel({ taskId: task.id, label });
+    },
+    [task.id, addLabel, task.labels]
+  );
+
+  const removeLabelFromTask = useCallback(
+    label => {
+      removeLabel({ taskId: task.id, label });
+    },
+    [task.id, removeLabel]
+  );
 
   return (
     <Card className={classes.root}>
@@ -92,6 +177,11 @@ const EditTask = props => {
           variant='outlined'
           className={classes.textarea}
           onChange={e => setNote(e.target.value)}
+        />
+        <LabelList
+          labels={task.labels}
+          addLabel={addLabelToTask}
+          removeLabel={removeLabelFromTask}
         />
       </div>
       <CardActions disableSpacing>
