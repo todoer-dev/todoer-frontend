@@ -5,46 +5,6 @@ import TaskList from '../../components/TaskList';
 import EditTask from '../../components/EditTask';
 import { TaskService } from '../../services/TaskService';
 
-const sampletasks = [
-  {
-    id: 1,
-    title: 'Task 1',
-    completed: false,
-    dueDate: '2020-12-12',
-    labels: [],
-  },
-  {
-    id: 2,
-    title: 'Task 2',
-    completed: true,
-    dueDate: '2020-12-12',
-    completedAt: new Date().toLocaleDateString(),
-    labels: ['Label 2'],
-  },
-  {
-    id: 3,
-    title: 'Task 3',
-    completed: true,
-    dueDate: '2020-12-12',
-    completedAt: new Date().toLocaleDateString(),
-    labels: ['Label 2', 'Label 10'],
-  },
-  {
-    id: 4,
-    title: 'Task 4',
-    completed: false,
-    dueDate: '2020-12-12',
-    labels: ['Label 10'],
-  },
-  {
-    id: 5,
-    title: 'Task 5',
-    completed: false,
-    dueDate: '2020-12-12',
-    labels: [],
-  },
-];
-
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',

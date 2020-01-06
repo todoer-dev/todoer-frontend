@@ -18,14 +18,14 @@ const mapTask = task =>
   });
 
 export const TaskService = {
-  headers: {
+  makeHeaders: () => ({
     Authorization: userService.authToken,
     'Content-Type': 'application/json',
-  },
+  }),
   fetchAll: async () => {
     return fetch(`${apiBase}/tasks`, {
       method: 'GET',
-      headers: TaskService.headers,
+      headers: TaskService.makeHeaders(),
     })
       .then(res => res.json())
       .then(res => res.data.map(mapTask));
@@ -33,7 +33,7 @@ export const TaskService = {
   create: async data => {
     return fetch(`${apiBase}/tasks`, {
       method: 'POST',
-      headers: TaskService.headers,
+      headers: TaskService.makeHeaders(),
       body: JSON.stringify(data),
     })
       .then(res => res.json())
@@ -42,13 +42,13 @@ export const TaskService = {
   delete: async id => {
     return fetch(`${apiBase}/tasks/${id}`, {
       method: 'DELETE',
-      headers: TaskService.headers,
+      headers: TaskService.makeHeaders(),
     });
   },
   patch: async (id, data) => {
     return fetch(`${apiBase}/tasks/${id}`, {
       method: 'PATCH',
-      headers: TaskService.headers,
+      headers: TaskService.makeHeaders(),
       body: JSON.stringify({
         task: data,
       }),
