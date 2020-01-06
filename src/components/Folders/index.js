@@ -10,6 +10,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import User from '../User';
 
 const drawerWidth = 240;
 
@@ -73,7 +74,9 @@ const Folders = props => {
       }}
       anchor='left'
     >
-      <div className={classes.toolbar}>user here</div>
+      <div className={classes.toolbar}>
+        <User />
+      </div>
       <Divider />
       <List>
         {[...defaultFolders, ...labels].map((text, index) => (
